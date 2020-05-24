@@ -2,6 +2,8 @@ package pl.coderslab.app;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.format.FormatterRegistry;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
@@ -13,6 +15,9 @@ import org.springframework.web.servlet.config.annotation.DefaultServletHandlerCo
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
+import pl.coderslab.app.converter.AuthorConverter;
+import pl.coderslab.app.converter.CategoryConverter;
+
 import javax.persistence.EntityManagerFactory;
 import java.nio.charset.Charset;
 import java.util.Arrays;
@@ -21,6 +26,7 @@ import java.util.List;
 @EnableWebMvc
 @ComponentScan(basePackages = "pl.coderslab")
 @EnableTransactionManagement
+@EnableJpaRepositories(basePackages = "pl.coderslab.app.repository")
 public class AppConfig implements WebMvcConfigurer {
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
@@ -53,5 +59,18 @@ public class AppConfig implements WebMvcConfigurer {
         JpaTransactionManager jpaTransactionManager =
                 new JpaTransactionManager(entityManagerFactory);
         return jpaTransactionManager;
+    }
+    @Override
+    public void addFormatters(FormatterRegistry registry) {
+        registry.addConverter(getCategoryConverter());
+        registry.addConverter(getAuthorConverter());
+    }
+    @Bean
+    public CategoryConverter getCategoryConverter() {
+        return new CategoryConverter();
+    }
+    @Bean
+    public AuthorConverter getAuthorConverter() {
+        return new AuthorConverter();
     }
 }

@@ -1,6 +1,8 @@
 package pl.coderslab.app.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table (name = "categories")
@@ -10,6 +12,8 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(length = 100)
+    @NotNull
+    @Min(value = 5)
     private String name;
     @Column(nullable = true)
     private String description;

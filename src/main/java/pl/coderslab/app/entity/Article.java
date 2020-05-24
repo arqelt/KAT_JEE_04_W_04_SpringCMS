@@ -1,6 +1,14 @@
 package pl.coderslab.app.entity;
 
+import pl.coderslab.app.validation.ValidationArticle;
+import pl.coderslab.app.validation.ValidationDraft;
+
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.groups.Default;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,15 +21,22 @@ public class Article {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(length = 200)
+    @NotNull(groups = {ValidationDraft.class, ValidationArticle.class})
+    @Max(value = 200, groups = {ValidationArticle.class})
     private String title;
+    @NotNull(groups = {ValidationDraft.class, ValidationArticle.class})
+    @Min(value = 500, groups = {ValidationArticle.class})
     private String content;
     private LocalDateTime created;
     private LocalDateTime updated;
+    private Boolean draft;
     @OneToOne
     @JoinColumn(name = "authors")
     private Author author;
-    @OneToMany
+
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "categories")
+    @NotEmpty
     private List<Category> categories = new ArrayList<>();
 
 
